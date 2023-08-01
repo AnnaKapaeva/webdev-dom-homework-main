@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Проект "Комменты"</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <ul class="comments">
+        <!-- <li  class="comment">
+          <div class="comment-header">
+            <div>Глеб Фокин</div>
+            <div>12.02.22 12:18</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Это будет первый комментарий на этой странице
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">3</span>
+              <button class="like-button"></button>
+            </div>
+          </div>
+        </li>
+        <li class="comment">
+          <div class="comment-header">
+            <div>Варвара Н.</div>
+            <div>13.02.22 19:22</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Мне нравится как оформлена эта страница! ❤
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">75</span>
+              <button class="like-button -active-like"></button>
+            </div>
+          </div>
+        </li> -->
+      </ul>
+      <div class="add-form">
+        <input id="name_input"
+          type="text"
+          class="add-form-name"
+          placeholder="Введите ваше имя"
+        />
+        <textarea id="comment_input" 
+          type="textarea"
+          class="add-form-text"
+          placeholder="Введите ваш коментарий"
+          rows="4"
+        ></textarea>
+        <div class="add-form-row">
+          <button class="add-form-button">Написать</button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <style>
+    .error {
+      background-color: red;
+    }
+  </style>
+
+
+  <script>
+    "use strict";
+    const buttonInputElement = document.querySelector('.add-form-button');
+    const nameInputElement = document.getElementById("name_input");
+    const commentInputElement = document.getElementById("comment_input");
+    const listElement = document.querySelector(".comments");
+
+    let years = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    };
+
+    let time = {
+      hour: 'numeric',
+      minute: 'numeric'
+    };
+
+    let currentDateElement = new Date();
+
+    const allComment = [
+      {
+        name: 'Глеб Фокин',
+        time: '12.02.22 12:18',
+        comment: 'Это будет первый комментарий на этой странице',
+        likesCounter: 3,
+        liked: false,
+      },
+      {
+        name: 'Варвара Н.',
+        time: '13.02.22 19:22',
+        comment: 'Мне нравится как оформлена эта страница! ❤',
+        likesCounter: 75, 
+        liked: false,
+      },
+    ];
+
+    // const oldListHtml = listElement.innerHTML;
+
+
+    const initLikeButtonsListeners = () => {
+      const likeButtonsElements = document.querySelectorAll('.like-button');
+      for(const likeButtonElement of likeButtonsElements) {
+        likeButtonElement.addEventListener('click', () => {
+          const index = likeButtonElement.dataset.index;
+           allComment[index].liked = ! allComment[index].liked;
+          if(allComment[index].liked) {
+            allComment[index].likesCounter += 1;
+          } else {
+            allComment[index].likesCounter -= 1;
+          }
+          renderAllComment();
+        });
+      }
+    };
+    initLikeButtonsListeners();
+
+
+    const renderAllComment = () => {
+      const allCommentHTML = allComment.map((allComment, index) => {
+        return `<li  class="comment">
+          <div class="comment-header">
+            <div>${allComment.name}</div>
+            <div>${allComment.time}</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">${allComment.comment}</div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">${allComment.likesCounter}</span>
+              <button class="like-button ${allComment.liked ? '-active-like' : ''}" data-index = ${index}></button>
+            </div>
+          </div>
+        </li>`
+      }).join(``);
+      listElement.innerHTML = allCommentHTML;
+      initLikeButtonsListeners();
+    };
+     renderAllComment();
+   
+
+      buttonInputElement.addEventListener('click', addComment);
+      function addComment() {
+        nameInputElement.classList.remove("error");
+        commentInputElement.classList.remove("error");
+        if(nameInputElement.value === "") {
+        nameInputElement.classList.add("error");
+        return;
+        } else if(commentInputElement.value === "") {
+          commentInputElement.classList.add("error");
+        return;
+        }
+
+      allComment.push({
+        name: nameInputElement.value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'),
+        comment: commentInputElement.value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'),
+        time: currentDateElement.toLocaleString("ru", years) + " " + currentDateElement.toLocaleString("ru", time),
+        likesCounter: 0,
+        liked: false,
+      });
+      renderAllComment();
+    };
+
+
+    // Ответ на комментарий
+
+    const newComment = () => {
+        const commentElement = document.querySelectorAll('.comment-text');
+        const inputComment = document.querySelector('.add-form-text');
+        const name = document.querySelector('.comment-header');
+        commentElement.forEach(commentElement => {
+          commentElement.addEventListener('click', () => {
+            inputComment.value = ">" + commentElement.innerText + " " + name.innerText;
+          });
+        });
+      }
+        nameInputElement.value = '';
+        commentInputElement.value = '';
+        nameInputElement.classList.remove("error");
+        commentInputElement.classList.remove("error");
+        newComment();
+
+    // безопасный код
+
+      // const replaceValue = (value) => {
+      //   .replaceAll('&', '&amp;')
+      //   .replaceAll('<', '&lt;')
+      //   .replaceAll('>', '&gt;')
+      //   .replaceAll('"', '&quot;')
+      //   return value;
+      // };
+      // renderAllComment();
+
+
+    // console.log("It works!");
+  </script>
+</html>
+
