@@ -112,7 +112,8 @@
     const initLikeButtonsListeners = () => {
       const likeButtonsElements = document.querySelectorAll('.like-button');
       for(const likeButtonElement of likeButtonsElements) {
-        likeButtonElement.addEventListener('click', () => {
+        likeButtonElement.addEventListener('click', (event) => {
+          event.stopPropagation();
           const index = likeButtonElement.dataset.index;
            allComment[index].liked = ! allComment[index].liked;
           if(allComment[index].liked) {
@@ -174,23 +175,22 @@
     };
 
 
-    // Ответ на комментарий
+        // Ответ на комментарий
 
-    const newComment = () => {
-        const commentElement = document.querySelectorAll('.comment-text');
+        const newComment = () => {
+        const commentElement = document.querySelectorAll('.comment');
         const inputComment = document.querySelector('.add-form-text');
-        const name = document.querySelector('.comment-header');
         commentElement.forEach(commentElement => {
           commentElement.addEventListener('click', () => {
-            inputComment.value = ">" + commentElement.innerText + " " + name.innerText;
+            inputComment.value = ">" + commentElement.innerText;
           });
         });
       }
+        newComment();
         nameInputElement.value = '';
         commentInputElement.value = '';
         nameInputElement.classList.remove("error");
         commentInputElement.classList.remove("error");
-        newComment();
 
     // безопасный код
 
