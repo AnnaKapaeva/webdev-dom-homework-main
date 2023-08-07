@@ -76,6 +76,42 @@
     const commentInputElement = document.getElementById("comment_input");
     const listElement = document.querySelector(".comments");
 
+    // Получение данных с сервера
+
+    const getApi = () => {
+      const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+        method: "GET",
+      });
+      fetchPromise.then((response) => {
+        const jsonPromise = response.json();
+        jsonPromise.then((responseData) => {
+          allComment = responseData.comments;
+          renderAllComment();
+        });
+      })
+    }
+    getApi();
+
+
+    // Отправление данных на сервер
+
+
+    const postApi = (nameInputElement, commentInputElement) => {
+      return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+        method: "POST",
+        body: JSON.stringify({
+          text: commentInputElement.value,
+          name: nameInputElement.value
+        })
+      }).then((data) => {
+        return data.json()
+      }).then((dataJson) => {
+        allComment = dataJson.comments;
+      }) 
+      getApi();
+        };
+      
+
     let years = {
       year: 'numeric',
       month: 'numeric',
@@ -89,22 +125,7 @@
 
     let currentDateElement = new Date();
 
-    const allComment = [
-      {
-        name: 'Глеб Фокин',
-        time: '12.02.22 12:18',
-        comment: 'Это будет первый комментарий на этой странице',
-        likesCounter: 3,
-        liked: false,
-      },
-      {
-        name: 'Варвара Н.',
-        time: '13.02.22 19:22',
-        comment: 'Мне нравится как оформлена эта страница! ❤',
-        likesCounter: 75, 
-        liked: false,
-      },
-    ];
+    let allComment = [];
 
     // const oldListHtml = listElement.innerHTML;
 
@@ -164,15 +185,11 @@
         return;
         }
 
-      allComment.push({
-        name: nameInputElement.value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'),
-        comment: commentInputElement.value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'),
-        time: currentDateElement.toLocaleString("ru", years) + " " + currentDateElement.toLocaleString("ru", time),
-        likesCounter: 0,
-        liked: false,
-      });
-      renderAllComment();
+        renderAllComment();
     };
+    
+  
+    
 
 
         // Ответ на комментарий
@@ -192,18 +209,6 @@
         nameInputElement.classList.remove("error");
         commentInputElement.classList.remove("error");
 
-    // безопасный код
-
-      // const replaceValue = (value) => {
-      //   .replaceAll('&', '&amp;')
-      //   .replaceAll('<', '&lt;')
-      //   .replaceAll('>', '&gt;')
-      //   .replaceAll('"', '&quot;')
-      //   return value;
-      // };
-      // renderAllComment();
-
-    // console.log("It works!");
   </script>
 </html>
 
