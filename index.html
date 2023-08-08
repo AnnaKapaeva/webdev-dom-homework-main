@@ -102,13 +102,10 @@
           text: commentInputElement.value,
           name: nameInputElement.value
         })
-      }).then((data) => {
-        return data.json()
-      }).then((dataJson) => {
-        allComment = dataJson.comments;
-      }) 
+      }).then(() => {
       getApi();
-        };
+        })
+      }
       
 
     let years = {
@@ -150,18 +147,20 @@
 
     const renderAllComment = () => {
       const allCommentHTML = allComment.map((allComment, index) => {
+        let currentDateElement = new Date(allComment.date);
+        const timing = currentDateElement.toLocaleDateString() + ' ' + currentDateElement.getHours() + ':' + currentDateElement.getMinutes();
         return `<li  class="comment">
           <div class="comment-header">
-            <div>${allComment.name}</div>
-            <div>${allComment.time}</div>
+            <div>${allComment.author.name}</div>
+            <div>${timing}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">${allComment.comment}</div>
+            <div class="comment-text">${allComment.text}</div>
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter">${allComment.likesCounter}</span>
-              <button class="like-button ${allComment.liked ? '-active-like' : ''}" data-index = ${index}></button>
+              <span class="likes-counter">${allComment.likes}</span>
+              <button class="like-button ${allComment.isLiked ? '-active-like' : ''}" data-index = ${index}></button>
             </div>
           </div>
         </li>`
@@ -184,12 +183,12 @@
         return;
         }
 
-        renderAllComment();
+        postApi(nameInputElement, commentInputElement);
+        nameInputElement.value = '';
+        commentInputElement.value = '';
+        nameInputElement.classList.remove("error");
+        commentInputElement.classList.remove("error");
     };
-    
-  
-    
-
 
         // Ответ на комментарий
 
