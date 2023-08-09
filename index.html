@@ -132,11 +132,11 @@
         likeButtonElement.addEventListener('click', (event) => {
           event.stopPropagation();
           const index = likeButtonElement.dataset.index;
-           allComment[index].liked = ! allComment[index].liked;
-          if(allComment[index].liked) {
-            allComment[index].likesCounter += 1;
+           allComment[index].isLiked = ! allComment[index].isLiked;
+          if(allComment[index].isLiked) {
+            allComment[index].likes += 1;
           } else {
-            allComment[index].likesCounter -= 1;
+            allComment[index].likes -= 1;
           }
           renderAllComment();
         });
