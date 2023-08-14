@@ -44,7 +44,7 @@
           </div>
         </li> -->
       </ul>
-      <div class="add-form">Комментарии загружаются...</div>
+      <div class="add-forms">Загрузка...</div>
       <div class="add-form">
         <input id="name_input"
           type="text"
@@ -76,7 +76,7 @@
     const nameInputElement = document.getElementById("name_input");
     const commentInputElement = document.getElementById("comment_input");
     const listElement = document.querySelector(".comments");
-    const form = document.querySelector(".add-form");
+    const form = document.querySelector(".add-forms");
 
     // Получение данных с сервера
 
@@ -85,12 +85,13 @@
         method: "GET",
       })
       .then((responseData) => {
-        form.innerHTML = `Комментарии загружаются...`;
+        form.disabled = true;
         return responseData;
       })
       .then((response) => {
         return response.json();
       }).then((responseData) => {
+        form.style.display = "none";
           allComment = responseData.comments;
           renderAllComment();
         });
@@ -107,6 +108,8 @@
                 name: nameInputElement.value,
             }),
         }).then((responseData) => {
+          buttonInputElement.disabled = true;
+          buttonInputElement.textContent = "Комментарий отправляется..."
             return responseData;
         }).then((responseData) => {
             return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
@@ -115,6 +118,8 @@
         }).then((response) => {
             return response.json();
         }).then((responseData) => {
+          buttonInputElement.disabled = false;
+          buttonInputElement.textContent = "Написать"
             allComment = responseData.comments;
             addComment();
             renderAllComment();
