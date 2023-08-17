@@ -101,6 +101,9 @@
     // Отправление данных на сервер
 
     const postApi = (nameInputElement, commentInputElement) => {
+      if(nameInputElement.value.length < 3 || commentInputElement.value.length < 3) {
+        alert("Имя и комментарий пользователя должны быть не менее 3 символов");
+      }
     return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
             method: "POST",
             body: JSON.stringify({
@@ -116,14 +119,40 @@
                     method: "GET",
                 });
         }).then((response) => {
+          if(response.status === 201) {
             return response.json();
+          } else{
+            return response.json().then((errorData) => {
+              if(response.status === 400) {
+                throw new Error("BadRequest: " + errorData.message);
+              } else if(response.status === 500) {
+                throw new Error("ServerUnavailable: Ошибка сервера");
+              } else{
+                throw new Error("ServerError: Сервер упал");
+              }
+            });
+          }
         }).then((responseData) => {
           buttonInputElement.disabled = false;
           buttonInputElement.textContent = "Написать"
-            allComment = responseData.comments;
-            // addComment();
-            renderAllComment();
-        });
+          allComment = responseData.comments;
+          renderAllComment();
+          nameInputElement.value = "";
+          commentInputElement.value = "";
+        })
+        .catch((error) => {
+          buttonInputElement.disabled = false;
+          buttonInputElement.textContent = "Написать";
+          if(error.message === "BadRequest:") {
+            alert("Ты сделал ошибку в запросе, исправь данные и попробуй снова");
+          } else if(error.message === "ServerUnavailable:") {
+            alert("Сервер временно не работает, попробуй позднее");
+          } else if(error.message === "ServerError:" || error.message === "Error:") {
+            alert("Кажется что-то пошло не так, попробуй позднее");
+          } else {
+            alert("Неизвестная ошибка, попробуй позднее");
+          }
+        });       
 };
       
 
