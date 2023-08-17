@@ -44,6 +44,7 @@
           </div>
         </li> -->
       </ul>
+      <div class="add-forms">Загрузка...</div>
       <div class="add-form">
         <input id="name_input"
           type="text"
@@ -71,41 +72,59 @@
 
   <script>
     "use strict";
-    const buttonInputElement = document.querySelector('.add-form-button');
+    const buttonInputElement = document.querySelector(".add-form-button");
     const nameInputElement = document.getElementById("name_input");
     const commentInputElement = document.getElementById("comment_input");
     const listElement = document.querySelector(".comments");
+    const form = document.querySelector(".add-forms");
 
     // Получение данных с сервера
 
     const getApi = () => {
-      const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+      return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
         method: "GET",
-      });
-      fetchPromise.then((response) => {
-        const jsonPromise = response.json();
-        jsonPromise.then((responseData) => {
+      })
+      .then((responseData) => {
+        form.disabled = true;
+        return responseData;
+      })
+      .then((response) => {
+        return response.json();
+      }).then((responseData) => {
+        form.style.display = "none";
           allComment = responseData.comments;
           renderAllComment();
         });
-      })
-    }
-    getApi();
-
+      }
+    
 
     // Отправление данных на сервер
 
-      const postApi = (nameInputElement, commentInputElement) => {
-      return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
-        method: "POST",
-        body: JSON.stringify({
-          text: commentInputElement.value,
-          name: nameInputElement.value
-        })
-      }).then(() => {
-      getApi();
-        })
-      }
+    const postApi = (nameInputElement, commentInputElement) => {
+    return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+            method: "POST",
+            body: JSON.stringify({
+                text: commentInputElement.value,
+                name: nameInputElement.value,
+            }),
+        }).then((responseData) => {
+          buttonInputElement.disabled = true;
+          buttonInputElement.textContent = "Комментарий отправляется..."
+            return responseData;
+        }).then((responseData) => {
+            return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+                    method: "GET",
+                });
+        }).then((response) => {
+            return response.json();
+        }).then((responseData) => {
+          buttonInputElement.disabled = false;
+          buttonInputElement.textContent = "Написать"
+            allComment = responseData.comments;
+            // addComment();
+            renderAllComment();
+        });
+};
       
 
     let years = {
@@ -202,11 +221,14 @@
         });
       }
         newComment();
-        nameInputElement.value = '';
-        commentInputElement.value = '';
+        getApi();
+        addComment();
+        renderAllComment();
+        nameInputElement.value = "";
+        commentInputElement.value = "";
         nameInputElement.classList.remove("error");
         commentInputElement.classList.remove("error");
-
   </script>
 </html>
+
 
