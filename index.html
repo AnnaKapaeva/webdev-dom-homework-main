@@ -110,14 +110,6 @@
                 text: commentInputElement.value,
                 name: nameInputElement.value,
             }),
-        }).then((responseData) => {
-          buttonInputElement.disabled = true;
-          buttonInputElement.textContent = "Комментарий отправляется..."
-            return responseData;
-        }).then((responseData) => {
-            return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
-                    method: "GET",
-                });
         }).then((response) => {
           if(response.status === 201) {
             return response.json();
@@ -130,8 +122,18 @@
               } else{
                 throw new Error("ServerError: Сервер упал");
               }
-            });
+            })
           }
+          }).then((responseData) => {
+          buttonInputElement.disabled = true;
+          buttonInputElement.textContent = "Комментарий отправляется..."
+            return responseData;
+        }).then((responseData) => {
+            return fetch("https://wedev-api.sky.pro/api/v1/anna-kapaeva/comments", {
+                    method: "GET",
+                });
+        }).then((response) => {
+          return response.json();
         }).then((responseData) => {
           buttonInputElement.disabled = false;
           buttonInputElement.textContent = "Написать"
@@ -141,8 +143,8 @@
           commentInputElement.value = "";
         })
         .catch((error) => {
-          buttonInputElement.disabled = false;
-          buttonInputElement.textContent = "Написать";
+          // buttonInputElement.disabled = false;
+          // buttonInputElement.textContent = "Написать";
           if(error.message === "BadRequest:") {
             alert("Ты сделал ошибку в запросе, исправь данные и попробуй снова");
           } else if(error.message === "ServerUnavailable:") {
