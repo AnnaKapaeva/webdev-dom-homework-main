@@ -17,8 +17,7 @@ import { renderAllComment } from "./renderAllComment.js";
         renderAllComment({ allComment });
       })
     };
-        
-      
+         
     // Отправление данных на сервер
 
     const postApi = (nameInputElement, commentInputElement) => {
