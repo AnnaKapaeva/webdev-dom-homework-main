@@ -1,9 +1,10 @@
 import { getComments, postComments } from "./api.js";
+import { newComment } from "./newComment.js";
+import { renderAllComment } from "./renderAllComment.js";
 
-const buttonInputElement = document.querySelector(".add-form-button");
+    const buttonInputElement = document.querySelector(".add-form-button");
     const nameInputElement = document.getElementById("name_input");
     const commentInputElement = document.getElementById("comment_input");
-    const listElement = document.querySelector(".comments");
     const form = document.querySelector(".add-forms");
 
     // Получение данных с сервера
@@ -13,7 +14,7 @@ const buttonInputElement = document.querySelector(".add-form-button");
           allComment = responseData.comments;
           form.disabled = true;
           form.style.display = "none";
-        renderAllComment();
+        renderAllComment({ allComment });
       })
     };
         
@@ -38,7 +39,7 @@ const buttonInputElement = document.querySelector(".add-form-button");
           buttonInputElement.disabled = false;
           buttonInputElement.textContent = "Написать"
           allComment = responseData.comments;
-          renderAllComment();
+          renderAllComment({ allComment });
           nameInputElement.value = "";
           commentInputElement.value = "";
         })
@@ -57,16 +58,13 @@ const buttonInputElement = document.querySelector(".add-form-button");
 };
       
 
-    let years = {
+    let time = {
       year: 'numeric',
       month: 'numeric',
       day: 'numeric',
-    };
-
-    let time = {
       hour: 'numeric',
       minute: 'numeric'
-    };
+    }
 
     let currentDateElement = new Date();
 
@@ -87,37 +85,12 @@ const buttonInputElement = document.querySelector(".add-form-button");
           } else {
             allComment[index].likes -= 1;
           }
-          renderAllComment();
+          renderAllComment({ allComment });
         });
       }
     };
     initLikeButtonsListeners();
 
-
-    const renderAllComment = () => {
-      const allCommentHTML = allComment.map((allComment, index) => {
-        let currentDateElement = new Date(allComment.date);
-        const timing = currentDateElement.toLocaleDateString() + ' ' + currentDateElement.getHours() + ':' + currentDateElement.getMinutes();
-        return `<li  class="comment">
-          <div class="comment-header">
-            <div>${allComment.author.name}</div>
-            <div>${timing}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">${allComment.text}</div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">${allComment.likes}</span>
-              <button class="like-button ${allComment.isLiked ? '-active-like' : ''}" data-index = ${index}></button>
-            </div>
-          </div>
-        </li>`
-      }).join(``);
-      listElement.innerHTML = allCommentHTML;
-      initLikeButtonsListeners();
-    };
-     renderAllComment();
    
 
       buttonInputElement.addEventListener('click', addComment);
@@ -139,21 +112,11 @@ const buttonInputElement = document.querySelector(".add-form-button");
         commentInputElement.classList.remove("error");
     };
 
-        // Ответ на комментарий
 
-        const newComment = () => {
-        const commentElement = document.querySelectorAll('.comment');
-        const inputComment = document.querySelector('.add-form-text');
-        commentElement.forEach(commentElement => {
-          commentElement.addEventListener('click', () => {
-            inputComment.value = ">" + commentElement.innerText;
-          });
-        });
-      }
         newComment();
         getApi();
         addComment();
-        renderAllComment();
+        renderAllComment({ allComment });
         nameInputElement.value = "";
         commentInputElement.value = "";
         nameInputElement.classList.remove("error");
