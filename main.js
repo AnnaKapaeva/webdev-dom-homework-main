@@ -1,6 +1,7 @@
 import { getComments, postComments } from "./api.js";
 import { newComment } from "./newComment.js";
 import { renderAllComment } from "./renderAllComment.js";
+import { renderMainPage } from "./renderMainPage.js";
 
     const buttonInputElement = document.querySelector(".add-form-button");
     const nameInputElement = document.getElementById("name_input");
@@ -9,18 +10,27 @@ import { renderAllComment } from "./renderAllComment.js";
 
     // Получение данных с сервера
 
-    const getApi = () => {
-        getComments().then((responseData) => {
+    export let user = {}
+    export const setUser = (value) =>{
+      user = value;
+    }
+    export const getApi = () => {
+        return getComments().then((responseData) => {
+          const form = document.querySelector(".add-forms");
           allComment = responseData.comments;
-          form.disabled = true;
+          if(form){
+            form.disabled = true;
           form.style.display = "none";
+          }
+          
         renderAllComment({ allComment });
       })
     };
          
     // Отправление данных на сервер
 
-    const postApi = (nameInputElement, commentInputElement) => {
+   export const postApi = (nameInputElement, commentInputElement) => {
+    const buttonInputElement = document.querySelector(".add-form-button");
       postComments({ 
         text: commentInputElement.value,
         name: nameInputElement.value, 
@@ -72,7 +82,7 @@ import { renderAllComment } from "./renderAllComment.js";
     // const oldListHtml = listElement.innerHTML;
 
 
-    const initLikeButtonsListeners = () => {
+    export const initLikeButtonsListeners = () => {
       const likeButtonsElements = document.querySelectorAll('.like-button');
       for(const likeButtonElement of likeButtonsElements) {
         likeButtonElement.addEventListener('click', (event) => {
@@ -88,35 +98,9 @@ import { renderAllComment } from "./renderAllComment.js";
         });
       }
     };
-    initLikeButtonsListeners();
-
-   
-
-      buttonInputElement.addEventListener('click', addComment);
-      function addComment() {
-        nameInputElement.classList.remove("error");
-        commentInputElement.classList.remove("error");
-        if(nameInputElement.value === "") {
-        nameInputElement.classList.add("error");
-        return;
-        } else if(commentInputElement.value === "") {
-          commentInputElement.classList.add("error");
-        return;
-        }
-
-        postApi(nameInputElement, commentInputElement);
-        nameInputElement.value = '';
-        commentInputElement.value = '';
-        nameInputElement.classList.remove("error");
-        commentInputElement.classList.remove("error");
-    };
+    
+    renderMainPage({container : document.querySelector(".container")})
 
 
-        newComment();
-        getApi();
-        addComment();
-        renderAllComment({ allComment });
-        nameInputElement.value = "";
-        commentInputElement.value = "";
-        nameInputElement.classList.remove("error");
-        commentInputElement.classList.remove("error");
+        
+    

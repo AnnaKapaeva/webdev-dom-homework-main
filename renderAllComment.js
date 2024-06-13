@@ -1,6 +1,10 @@
-const listElement = document.querySelector(".comments");
+import { initLikeButtonsListeners, user } from "./main.js";
+import { newComment } from "./newComment.js";
+
+
 
 export const renderAllComment = ({ allComment }) => {
+  const listElement = document.querySelector(".comments");
     const allCommentHTML = allComment
     .map((allComment, index) => {
       let currentDateElement = new Date(allComment.date);
@@ -22,6 +26,11 @@ export const renderAllComment = ({ allComment }) => {
       </li>`
     }).join(``);
     listElement.innerHTML = allCommentHTML;
+
+    if (user) {
+      newComment();
+      initLikeButtonsListeners();
+    }
   };
 
 
