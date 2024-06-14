@@ -8,6 +8,8 @@ container.innerHTML = user ? `<div class="add-form">
   type="text"
   class="add-form-name"
   placeholder="Введите ваше имя"
+  value="${user.user.name}"
+  readonly
 />
 <textarea id="comment_input" 
   type="textarea"
@@ -22,5 +24,5 @@ container.innerHTML = user ? `<div class="add-form">
 <button class="auth-button">Авторизуйтесь</button>
 </div>`
 
-user ? addComment() : inItAuthButtonListener();
+user ? addComment() : inItAuthButtonListener({container : document.querySelector(".container")});
 }

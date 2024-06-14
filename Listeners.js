@@ -1,6 +1,8 @@
-export const inItAuthButtonListener = () => {
+import { renderLogin } from "./renderLogin.js";
+
+export const inItAuthButtonListener = ({container}) => {
     const authButton = document.querySelector(".auth-button");
     authButton.addEventListener('click', () => {
-console.log("Тут будет форма авторизации")
+renderLogin({container})
     })
 }

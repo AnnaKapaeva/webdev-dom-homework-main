@@ -10,7 +10,7 @@ import { renderMainPage } from "./renderMainPage.js";
 
     // Получение данных с сервера
 
-    export let user = {}
+    export let user = null
     export const setUser = (value) =>{
       user = value;
     }
