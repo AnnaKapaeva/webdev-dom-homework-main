@@ -1,6 +1,6 @@
 import { initLikeButtonsListeners, user } from "./main.js";
 import { newComment } from "./newComment.js";
-
+import {format} from "date-fns"
 
 
 export const renderAllComment = ({ allComment }) => {
@@ -8,7 +8,9 @@ export const renderAllComment = ({ allComment }) => {
     const allCommentHTML = allComment
     .map((allComment, index) => {
       let currentDateElement = new Date(allComment.date);
-      const timing = currentDateElement.toLocaleDateString() + ' ' + currentDateElement.getHours() + ':' + currentDateElement.getMinutes();
+      //const timing = currentDateElement.toLocaleDateString() + ' ' + currentDateElement.getHours() + ':' + currentDateElement.getMinutes();
+      const timing=
+      format(currentDateElement, "yyyy-MM-dd hh.mm.ss")
       return `<li  class="comment">
         <div class="comment-header">
           <div>${allComment.author.name}</div>
