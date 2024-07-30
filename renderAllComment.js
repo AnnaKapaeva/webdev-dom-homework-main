@@ -13,7 +13,7 @@ export const renderAllComment = ({ allComment }) => {
       format(currentDateElement, "yyyy-MM-dd hh.mm.ss")
       return `<li  class="comment">
         <div class="comment-header">
-          <div>${allComment.author.name}</div>
+          <div>${allComment.author}</div>
           <div>${timing}</div>
         </div>
         <div class="comment-body">
